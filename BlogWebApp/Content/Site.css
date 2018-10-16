@@ -1,0 +1,77 @@
+﻿nav form {
+    float: left;
+}
+.carousel {
+    height: 400px;
+}
+
+.card .card-image {
+    height: 300px;
+    background-size: cover;
+    background-position: center;
+}
+.blog-posts .card-content {
+    height: 140px;
+    overflow: hidden;
+}
+.connect > li {
+    display: inline-block;
+    padding-right: 45px;
+}
+body {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+}
+
+main {
+    flex: 1 0 auto;
+}
+.pagination li {
+    height: auto !important;
+    margin: 0 10px;
+    background-color: #607d8b;
+    border-radius: 50%;
+    padding: 5px;
+}
+.pagination li a {
+    color: #fff;
+}
+.pagination li.active {
+    background-color: #2196f3;
+    border-radius: 50%;
+    padding: 5px;
+}
+.pagination li {
+    -webkit-box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14),0 3px 1px -2px rgba(0,0,0,0.12),0 1px 5px 0 rgba(0,0,0,0.2);
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14),0 3px 1px -2px rgba(0,0,0,0.12),0 1px 5px 0 rgba(0,0,0,0.2);
+}
+.modal.bottom-sheet {
+    max-height: 62%;
+}
+.modal.top-sheet {
+    top: 0% !important;
+    bottom: auto !important;
+    transition: transform cubic-bezier(0.22, 0.61, 0.36, 1) .2s;
+    will-change: transform;
+    transform: translate(0, -100%) scale(1) !important;
+    width: 100%;
+    opacity: 1 !important;
+}
+.modal.top-sheet.open {
+    transition: transform cubic-bezier(0.22, 0.61, 0.36, 1) .35s .25s;
+}
+
+.modal.top-sheet.open:not([style*="display: none"]):not([style*="opacity: 0;"]) {
+    transform: translate(0, 0%) !important;
+}
+.collection-item a.tooltipped {
+    margin: 0 20px;
+}
+.carousel .carousel-item {
+    width: 600px;
+    height: 600px;
+}
+.carousel {
+    height: 500px;
+}

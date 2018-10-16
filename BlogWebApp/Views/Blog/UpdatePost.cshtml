@@ -1,0 +1,72 @@
+﻿@model BlogWebApp.Models.PostViewModel
+<br /><br />
+<h2 class="center blue-grey-text">Update Post</h2>
+
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.css">
+<script src="~/Scripts/medium-editor/medium-editor.js"></script>
+<link href="~/Content/medium-editor/medium-editor.min.css" rel="stylesheet" />
+<link href="~/Content/medium-editor/themes/beagle.min.css" rel="stylesheet" />
+
+
+@using (Html.BeginForm("UpdatePost", "Blog", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="row">
+        <br /><br />
+        @Html.ValidationSummary(true, "", new { @class = "center red-text flow-text light" })
+        <div class="input-field col s12 m8 offset-m2">
+            @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "validate" } })
+            @Html.ValidationMessageFor(model => model.Title, "", new { @class = "center red-text" })
+            <label for="Title">Title</label>
+        </div>
+
+        <div class="input-field col s12 m8 offset-m2">
+            @Html.TextAreaFor(model => model.Blurb, new { @class = "materialize-textarea" })
+            @Html.ValidationMessageFor(model => model.Blurb, "", new { @class = "center red-text" })
+            <label for="Blurb">Summary</label>
+        </div>
+
+        <div class="input-field col s12 m8 offset-m2">
+            @Html.TextAreaFor(model => model.HtmlBody, new { @class = "materialize-textarea editor" })
+            @Html.ValidationMessageFor(model => model.HtmlBody, "", new { @class = "center red-text" })
+        </div>
+
+        <div class="input-field col s12 m8 offset-m2">
+            @Html.EditorFor(model => model.Tags)
+            @Html.ValidationMessageFor(model => model.Tags, "", new { @class = "center red-text" })
+            <label for="Tags">Tags</label>
+        </div>
+        <div class="file-field input-field col s12 m8 offset-m2">
+            <div class="btn light-blue">
+                <span>Image</span>
+                <input type="file" id="Image" name="Image" accept="image/*">
+            </div>
+            <div class="file-path-wrapper">
+                <input class="file-path validate" type="text">
+            </div>
+            @Html.ValidationMessageFor(model => model.Image, "", new { @class = "center red-text" })
+        </div>
+        @Html.HiddenFor(model => model.PostID)
+        <div class="input-field center-align col s12">
+            <input type="submit" value="Update" class="btn-large light-blue" />
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        var editor = new MediumEditor('.editor', {
+            toolbar: {
+                buttons: ['bold', 'italic', 'underline', 'quote', 'anchor', 'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull', 'orderedlist', 'unorderedlist', 'pre', 'removeFormat', 'outdent', 'indent', 'h2', 'h3', 'html'],
+            },
+            buttonLabels: 'fontawesome',
+            anchor: {
+                targetCheckbox: true
+            },
+            placeholder: false
+        });
+
+    </script>
+}

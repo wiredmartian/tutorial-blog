@@ -1,0 +1,53 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - BUGS.IO</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
+    <link href="~/Content/Site.css" rel="stylesheet" />
+</head>
+<body>
+    <header>
+        <nav class="light-blue lighten-1" role="navigation">
+            <div class="nav-wrapper container">
+                <a id="logo-container" href="/" class="brand-logo">
+                    <img src="~/Content/logo.png" style="width: 45px;padding: 10px 0 0 0;" />
+                </a>
+                <ul class="right hide-on-med-and-down">
+                    <li><a href="/blog/posts">Blog</a></li>
+                    <li><a href="/blog/manage">Manage</a></li>
+                    @Html.Partial("_LoginPartial")
+                </ul>
+
+
+                <ul id="nav-mobile" class="sidenav">
+                    <li><a href="/blog/posts">Blog</a></li>
+                    <li><a href="/blog/manage">Manage</a></li>
+                    @Html.Partial("_LoginPartial")
+                </ul>
+                <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+            </div>
+        </nav>
+    </header>
+    <main>
+        <div class="container">
+            @RenderBody()
+        </div>
+    </main>
+    <footer class="page-footer light-blue">
+        <div class="footer-copyright">
+            <div class="container">
+                Made by <a class="orange-text text-lighten-3" href="http://materializecss.com">don't be that guy</a>
+            </div>
+        </div>
+    </footer>
+
+    @Scripts.Render("~/bundles/jquery")
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script>
+    <script src="~/Scripts/materialize/init.js"></script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>

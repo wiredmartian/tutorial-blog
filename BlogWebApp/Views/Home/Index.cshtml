@@ -1,0 +1,19 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+
+<div class="carousel">
+    <a class="carousel-item" href="#one!"><img src="https://picsum.photos/600/600/?random"></a>
+    <a class="carousel-item" href="#one!"><img src="https://picsum.photos/600/600/?random"></a>
+    <a class="carousel-item" href="#one!"><img src="https://picsum.photos/600/600/?random"></a>
+    <a class="carousel-item" href="#one!"><img src="https://picsum.photos/600/600/?random"></a>
+    <a class="carousel-item" href="#one!"><img src="https://picsum.photos/600/600/?random"></a>
+
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var elems = document.querySelectorAll('.carousel');
+        var instances = M.Carousel.init(elems, { fullWidth: false, indicators: true });
+    });
+</script>

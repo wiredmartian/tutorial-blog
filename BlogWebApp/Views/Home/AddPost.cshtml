@@ -1,0 +1,52 @@
+﻿@model BlogWebApp.Models.PostViewModel
+
+@{
+    ViewBag.Title = "AddPost";
+}
+<br /><br />
+<h2 class="center blue-grey-text">Add Article</h2>
+
+
+@using (Html.BeginForm("AddPost","Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    
+<div class="row">
+    <br /><br />
+    @Html.ValidationSummary(true, "", new { @class = "center red-text flow-text light" })
+    <div class="input-field col s12 m8 offset-m2">
+        @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "validate" } })
+        @Html.ValidationMessageFor(model => model.Title, "", new { @class = "center red-text" })
+        <label for="Title">Title</label>
+    </div>
+
+    <div class="input-field col s12 m8 offset-m2">
+        <textarea id="HtmlBody" name="HtmlBody" class="materialize-textarea"></textarea>
+        <label for="HtmlBody">Textarea</label>
+    </div>
+
+    <div class="input-field col s12 m8 offset-m2">
+        @Html.EditorFor(model => model.Tags, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.Tags, "", new { @class = "center red-text" })
+        <label for="Tags">Tags</label>
+    </div>
+    <div class="file-field input-field col s12 m8 offset-m2">
+        <div class="btn light-blue">
+            <span>Article Image</span>
+            <input type="file" id="Image" name="Image" required accept="image/*">
+        </div>
+        <div class="file-path-wrapper">
+            <input class="file-path validate" type="text">
+        </div>
+        @Html.ValidationMessageFor(model => model.Image, "", new { @class = "center red-text" })
+    </div>
+
+    <div class="input-field center-align col s12">
+        <input type="submit" value="Save" class="btn-large light-blue" />
+    </div>
+</div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -1,0 +1,32 @@
+﻿@model BlogWebApp.Models.RegisterViewModel
+@{
+    ViewBag.Title = "Register";
+}
+<br /><br />
+<h2 class="center blue-grey-text">@ViewBag.Title</h2>
+
+<div class="row">
+    @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "col m12", role = "form" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary("", new { @class = "center red-text flow-text light" })
+    <div class="input-field col s12 m8  offset-m2">
+        @Html.TextBoxFor(m => m.Email)
+        <label for="Email">Email Address</label>
+    </div>
+    <div class="input-field col s12 m8  offset-m2">
+        @Html.PasswordFor(m => m.Password)
+        <label for="Password">Password</label>
+    </div>
+    <div class="input-field col s12 m8 offset-m2">
+        @Html.PasswordFor(m => m.ConfirmPassword)
+        <label for="ConfirmPassword">Confirm Password</label>
+    </div>
+        <div class="input-field center-align col s12">
+            <input type="submit" value="Register" class="btn-large light-blue" />
+        </div>
+    }
+</div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

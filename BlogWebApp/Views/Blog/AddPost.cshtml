@@ -1,0 +1,82 @@
+﻿@model BlogWebApp.Models.PostViewModel
+
+@{
+    ViewBag.Title = "Add New Post";
+}
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.css">
+<script src="~/Scripts/medium-editor/medium-editor.js"></script>
+<link href="~/Content/medium-editor/medium-editor.min.css" rel="stylesheet" />
+<link href="~/Content/medium-editor/themes/beagle.min.css" rel="stylesheet" />
+
+<br /><br />
+<h2 class="center blue-grey-text">Add Article</h2>
+
+
+@using (Html.BeginForm("AddPost", "Blog", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+<div class="row">
+    <br /><br />
+    @Html.ValidationSummary(true, "", new { @class = "center red-text flow-text light" })
+    <div class="input-field col s12">
+        @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "validate" } })
+        @Html.ValidationMessageFor(model => model.Title, "", new { @class = "center red-text" })
+        <label for="Title">Title</label>
+    </div>
+    @Html.ValidationSummary(true, "", new { @class = "center red-text flow-text light" })
+    <div class="input-field col s12">
+        @Html.TextAreaFor(model => model.Blurb, new { @class = "materialize-textarea" })
+        @Html.ValidationMessageFor(model => model.Blurb, "", new { @class = "center red-text" })
+        <label for="Blurb">Summary</label>
+    </div>
+
+    <div class="file-field input-field col s12 m6">
+        <div class="btn light-blue btn-small">
+            <span>Article Image</span>
+            <input type="file" id="Image" name="Image" required accept="image/*">
+        </div>
+        <div class="file-path-wrapper">
+            <input class="file-path validate" type="text">
+        </div>
+        @Html.ValidationMessageFor(model => model.Image, "", new { @class = "center red-text" })
+    </div>
+
+    <div class="input-field col s12 m6">
+        @Html.EditorFor(model => model.Tags, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.Tags, "", new { @class = "center red-text" })
+        <label for="Tags">Tags</label>
+    </div>
+    
+    <div class="input-field col s12">
+        <br /><br />
+        <textarea id="HtmlBody" name="HtmlBody" class="editor medium-editor-textarea materialize-textarea">
+        <p class="center"><b>Start Typing... Mark to for edit options</b></p>
+        </textarea>
+        @Html.ValidationMessageFor(model => model.HtmlBody, "", new { @class = "center red-text" })
+        <br /><br />
+    </div>
+
+
+    <div class="input-field center-align col s12">
+        <input type="submit" value="Save" class="btn-large light-blue" />
+    </div>
+</div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        var editor = new MediumEditor('.editor', {
+            toolbar: {
+                buttons: ['bold', 'italic', 'underline', 'quote', 'anchor', 'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull', 'orderedlist', 'unorderedlist', 'pre', 'removeFormat', 'outdent', 'indent', 'h2', 'h3', 'html'],
+            },
+            buttonLabels: 'fontawesome',
+            anchor: {
+                targetCheckbox: true
+            },
+            placeholder: false
+        });
+       
+    </script>
+}

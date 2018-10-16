@@ -1,0 +1,99 @@
+﻿@using BlogWebApp.Models
+@model IEnumerable<ManageBlogViewModel>
+@{
+    ViewBag.Title = "Manage Blog";
+}
+<br />
+<h1 class="center blue-grey-text">Manage Blog</h1>
+<br />
+<a href="/blog/add" class="btn blue">New Article</a>
+<ul class="collection">
+    @{
+        if (Model != null) // dumbo
+        {
+            foreach (var item in Model)
+            {
+                <li class="collection-item">
+                    <div>
+                        @item.Title
+                        <a href="#deleteModal" data-target="deleteModal" data-id="@item.PostID" data-slug="@item.Slug" data-position="right" data-tooltip="Remove this post" class="secondary-content modal-trigger tooltipped show-delete-modal"><i class="material-icons">delete</i></a>
+                        <a href="/blog/update/@item.PostID" data-position="left" data-tooltip="Update this post" class="secondary-content modal-trigger tooltipped show-delete-modal"><i class="material-icons">create</i></a>
+                    </div>
+                </li>
+            }
+        }
+    }
+</ul>
+
+<div id="deleteModal" class="modal bottom-sheet">
+    <div class="container">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="post-title blue-grey-text center"></h3>
+                <br />
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col s12">
+                        <p class="post-body blue-grey-text valign"></p>
+                        <br />
+                    </div>
+                </div>
+                <a href="!#" class="btn btn-block red" id="removePost">Confirm Delete</a>
+            </div>
+        </div>
+        <br /><br />
+    </div>
+</div>
+<script src="~/Scripts/jquery-2.2.4.min.js"></script>
+<script>
+
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var modals = document.querySelectorAll('.modal');
+        M.Modal.init(modals);
+        M.Tooltip.init(document.querySelectorAll('.tooltipped'));
+    });
+    $('.show-delete-modal').on('click', function () {
+        $('.show-delete-modal').removeClass('active');
+        $(this).addClass('active');
+        var id = $(this).attr('data-slug');
+        $.get('/blog/preview/' + id, function (data) {
+            $('.post-title').text(data.Title);
+            $('.post-body').text(data.Body);
+        });
+    });
+  
+
+    $('#removePost').on('click', function (e) {
+        e.preventDefault();
+        var el = $('.show-delete-modal.active'),
+            id = el.attr('data-id');
+        if (id.length === 36) {
+            $.ajax({
+                type: 'POST',
+                url: '/blog/post/' + id,
+            }).done(function (res) {
+                if (res.success) {
+                    el.closest('li').remove();
+
+                    var modal = document.querySelector('.modal');
+                    var instance = M.Modal.getInstance(modal);
+                    instance.close();
+                } 
+                M.toast({
+                    html: res.message,
+                    inDuration: 300,
+                    outDuration: 400
+                });
+                }).fail(function (err) {
+                    M.toast({
+                        html: err.message,
+                        inDuration: 300,
+                        outDuration: 400
+                    });
+            });
+        }
+    });
+    
+</script>
