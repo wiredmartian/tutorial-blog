@@ -242,12 +242,6 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\banners\banner-1.jpg" />
-    <Content Include="Content\banners\banner-2.jpg" />
-    <Content Include="Content\banners\banner-3.jpg" />
-    <Content Include="Content\banners\banner-4.jpg" />
-    <Content Include="Content\banners\banner-5.jpg" />
-    <Content Include="Content\banners\banner-6.jpg" />
     <Content Include="Content\btn_google_signin_dark_normal_web.png" />
     <Content Include="Content\highlight\atom-one-light.css" />
     <Content Include="Content\highlight\codepen-embed.css" />
