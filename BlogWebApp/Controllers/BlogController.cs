@@ -21,9 +21,9 @@ namespace BlogWebApp.Controllers
         {
             return View();
         }
-        [HttpPost]
+        [HttpPost, ValidateAntiForgeryToken]
         [Route("add")]
-        [ValidateAntiForgeryToken]
+        [ValidateInput(false)]
         public ActionResult AddPost(PostViewModel model)
         {
             if (!ModelState.IsValid)

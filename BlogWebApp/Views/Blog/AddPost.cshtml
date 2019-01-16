@@ -12,7 +12,7 @@
 <h2 class="center blue-grey-text">Add Article</h2>
 
 
-@using (Html.BeginForm("AddPost", "Blog", FormMethod.Post, new { enctype = "multipart/form-data" }))
+@using (Html.BeginForm("AddPost", "Blog", FormMethod.Post, new { enctype = "multipart/form-data"}))
 {
     @Html.AntiForgeryToken()
 
@@ -50,9 +50,10 @@
     
     <div class="input-field col s12">
         <br /><br />
-        <textarea id="HtmlBody" name="HtmlBody" class="editor medium-editor-textarea materialize-textarea">
-        <p class="center"><b>Start Typing... Mark to for edit options</b></p>
-        </textarea>
+        @Html.TextAreaFor(x => x.HtmlBody, new { @class="editor medium-editor-textarea materialize-textarea"})
+        <!--<textarea id="HtmlBody" name="HtmlBody" class="editor medium-editor-textarea materialize-textarea">
+        
+        </textarea>-->
         @Html.ValidationMessageFor(model => model.HtmlBody, "", new { @class = "center red-text" })
         <br /><br />
     </div>
