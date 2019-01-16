@@ -75,3 +75,13 @@ main {
 .carousel {
     height: 600px;
 }
+
+/** ARTICLE PAGE */
+.chips.input-field {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+.chips.input-field > input {
+    margin-bottom: 0;
+    border-bottom: none;
+}
