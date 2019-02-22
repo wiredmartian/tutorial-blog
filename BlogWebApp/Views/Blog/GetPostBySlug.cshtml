@@ -2,7 +2,6 @@
 @{
     ViewBag.Title = Model.Title;
 }
-<link href="~/Content/highlight/default.css" rel="stylesheet" />
 
 <style>
     h1, h2, h3 {
@@ -14,42 +13,34 @@
         font-size: 1.2rem;
         font-weight: 300;
     }
-
+    
     .row {
         padding-top: 2em;
     }
 </style>
 <div class="row">
     <div class="col s12 m8 offset-m2">
-            <h3 class="center blue-grey-text">
-                <b>@Model.Title</b>
-            </h3>
-        </div>
+        <h3 class="center blue-grey-text">
+            <b>@Model.Title</b>
+        </h3>
+    </div>
 
     <div class="col s12 m12">
         <div class="center">
-            <img src="@Model.ImageUrl" alt=""/>
+            <img src="@Model.ImageUrl" alt="" class="responsive-img" />
         </div>
         <p class="light blue-grey-text flow-text">
             @Html.Raw(Model.Body)
         </p>
-        <div class="right-align blue-text">
+    </div>
+    <div class="col s12 m6">
+        <div class="blue-grey-text chip">
+            @Model.Tags
+        </div>
+    </div>
+    <div class="col s12 m6">
+        <div class="blue-text">
             @Model.Date.ToLongDateString()
         </div>
-        <div class="left-align blue-grey-text">
-                @Model.Tags
-            </div>
     </div>
 </div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var el = document.querySelector('.materialboxed');
-        M.Materialbox.init(el, {
-            inDuration: 300,
-            outDuration: 300
-        });
-    });
-</script>
-<script src="~/Scripts/highlight/highlight.pack.js"></script>
-<script>hljs.initHighlightingOnLoad();</script>

@@ -4,6 +4,7 @@ using BlogWebApp.Services.Logic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -13,7 +14,13 @@ namespace BlogWebApp.Controllers
     [RoutePrefix("blog")]
     public class BlogController : Controller
     {
-        private readonly IPost _post = new Services.Logic.PostService();
+        public BlogController(): this(new PostService()) { }
+        private readonly IPost _post;
+
+        public BlogController(IPost _post)
+        {
+            this._post = _post;
+        }
         // GET: Blog
         [HttpGet]
         [Route("add")]
@@ -24,22 +31,22 @@ namespace BlogWebApp.Controllers
         [HttpPost, ValidateAntiForgeryToken]
         [Route("add")]
         [ValidateInput(false)]
-        public ActionResult AddPost(PostViewModel model)
+        public async Task<ActionResult> AddPost(PostViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
-            var post = _post.AddPost(model);
+            var post = await _post.AddPost(model);
             if (post != null)
                 return RedirectToAction("GetPostBySlug", new { slug = post.Slug });
             return View(model);
         }
         [HttpGet]
         [Route("update/{id}")]
-        public ActionResult UpdatePost(Guid id)
+        public async Task<ActionResult> UpdatePost(Guid id)
         {
-            var post = _post.GetPostById(id);
+            var post = await _post.GetPostById(id);
             if (post != null)
             {
                 return View(new PostViewModel
@@ -55,24 +62,27 @@ namespace BlogWebApp.Controllers
         }
         [HttpPost]
         [Route("update/{id}")]
-        public ActionResult UpdatePost(PostViewModel model, Guid id)
+        public async Task<ActionResult> UpdatePost(PostViewModel model, Guid id)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
-            var post = _post.PutPost(model);
+            var post = await _post.PutPost(model);
             if (post != null)
                 return RedirectToAction("GetPostBySlug", new { slug = post.Slug });
             return View(model);
         }
         [HttpGet]
+        [AllowAnonymous]
         [Route("posts")]
         public ViewResult GetListOfPosts(int? page)
         {
-            return View(_post.GetPosts(page));
+            var posts = _post.GetPosts(page);
+            return View(posts);
         }
         [HttpGet]
+        [AllowAnonymous]
         [Route("preview/{slug}")]
         public JsonResult PreviewPost(string slug)
         {
@@ -84,10 +94,11 @@ namespace BlogWebApp.Controllers
             return Json(new { });
         }
         [HttpGet]
+        [AllowAnonymous]
         [Route("post/{slug}")]
-        public ViewResult GetPostBySlug(string slug)
+        public async Task<ViewResult> GetPostBySlug(string slug)
         {
-            var post = _post.GetPost(slug);
+            var post = await _post.GetPost(slug);
             return View(post);
         }
 
@@ -101,7 +112,7 @@ namespace BlogWebApp.Controllers
 
         [HttpPost]
         [Route("post/{id}")]
-        public JsonResult RemovePost(Guid id)
+        public async Task<JsonResult> RemovePost(Guid id)
         {
             string message = string.Empty;
             bool success = false;
@@ -109,7 +120,7 @@ namespace BlogWebApp.Controllers
             {
                 message = "Post Not Found";
             }
-            var post = _post.RemovePost(id);
+            var post = await _post.RemovePost(id);
             if (!post)
             {
                 message = "Failed to remove post";

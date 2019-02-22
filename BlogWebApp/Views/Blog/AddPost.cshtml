@@ -26,7 +26,7 @@
     </div>
     @Html.ValidationSummary(true, "", new { @class = "center red-text flow-text light" })
     <div class="input-field col s12">
-        @Html.TextAreaFor(model => model.Blurb, new { @class = "materialize-textarea" })
+        @Html.TextAreaFor(model => model.Blurb, new { @class = "materialize-textarea", @data_length = "255" })
         @Html.ValidationMessageFor(model => model.Blurb, "", new { @class = "center red-text" })
         <label for="Blurb">Summary</label>
     </div>
@@ -43,9 +43,10 @@
     </div>
 
     <div class="input-field col s12 m6">
-        @Html.EditorFor(model => model.Tags, new { htmlAttributes = new { @class = "form-control" } })
+        <div class="chips chips-placeholder">
+            @Html.EditorFor(model => model.Tags, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
         @Html.ValidationMessageFor(model => model.Tags, "", new { @class = "center red-text" })
-        <label for="Tags">Tags</label>
     </div>
     
     <div class="input-field col s12">
@@ -66,8 +67,8 @@
 }
 
 @section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
     <script>
+        // editor
         var editor = new MediumEditor('.editor', {
             toolbar: {
                 buttons: ['bold', 'italic', 'underline', 'quote', 'anchor', 'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull', 'orderedlist', 'unorderedlist', 'pre', 'removeFormat', 'outdent', 'indent', 'h2', 'h3', 'html'],
@@ -78,6 +79,14 @@
             },
             placeholder: false
         });
-       
+
+        // tag chips
+        $('.chips-placeholder').chips({
+            placeholder: 'Enter a tag'
+        });
+        var blurb = $('#Blurb');
+        M.textareaAutoResize(blurb);
+        blurb.characterCounter();
     </script>
+
 }
