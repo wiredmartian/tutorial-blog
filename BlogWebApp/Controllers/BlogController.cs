@@ -31,22 +31,22 @@ namespace BlogWebApp.Controllers
         [HttpPost, ValidateAntiForgeryToken]
         [Route("add")]
         [ValidateInput(false)]
-        public ActionResult AddPost(PostViewModel model)
+        public async Task<ActionResult> AddPost(PostViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
-            var post = _post.AddPost(model);
+            var post = await _post.AddPost(model);
             if (post != null)
                 return RedirectToAction("GetPostBySlug", new { slug = post.Slug });
             return View(model);
         }
         [HttpGet]
         [Route("update/{id}")]
-        public ActionResult UpdatePost(Guid id)
+        public async Task<ActionResult> UpdatePost(Guid id)
         {
-            var post = _post.GetPostById(id);
+            var post = await _post.GetPostById(id);
             if (post != null)
             {
                 return View(new PostViewModel
