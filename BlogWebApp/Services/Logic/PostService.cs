@@ -149,7 +149,7 @@ namespace BlogWebApp.Services.Logic
                     });
                 return posts;
             }
-            return null;
+            return new List<ManageBlogViewModel>();
         }
         public async Task<ApplicationUser> GetUser()
         {
