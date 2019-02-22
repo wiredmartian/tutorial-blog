@@ -62,13 +62,13 @@ namespace BlogWebApp.Controllers
         }
         [HttpPost]
         [Route("update/{id}")]
-        public ActionResult UpdatePost(PostViewModel model, Guid id)
+        public async Task<ActionResult> UpdatePost(PostViewModel model, Guid id)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
-            var post = _post.PutPost(model);
+            var post = await _post.PutPost(model);
             if (post != null)
                 return RedirectToAction("GetPostBySlug", new { slug = post.Slug });
             return View(model);
@@ -112,7 +112,7 @@ namespace BlogWebApp.Controllers
 
         [HttpPost]
         [Route("post/{id}")]
-        public JsonResult RemovePost(Guid id)
+        public async Task<JsonResult> RemovePost(Guid id)
         {
             string message = string.Empty;
             bool success = false;
@@ -120,7 +120,7 @@ namespace BlogWebApp.Controllers
             {
                 message = "Post Not Found";
             }
-            var post = _post.RemovePost(id);
+            var post = await _post.RemovePost(id);
             if (!post)
             {
                 message = "Failed to remove post";

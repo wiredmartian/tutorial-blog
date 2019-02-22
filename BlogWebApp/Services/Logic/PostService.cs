@@ -157,13 +157,13 @@ namespace BlogWebApp.Services.Logic
             return webAppUser;
         }
 
-        public SinglePostViewModel PutPost(PostViewModel post)
+        public async Task<SinglePostViewModel> PutPost(PostViewModel post)
         {
             if (_ValidGuid(post.PostID))
             {
                 FileHandler handler = new FileHandler(post.Image);
                 var FileData = handler.UploadImage();
-                var singlePost = _GetPost(post.PostID);
+                var singlePost = await _GetPost(post.PostID);
 
                 if (singlePost != null)
                 {
@@ -178,27 +178,27 @@ namespace BlogWebApp.Services.Logic
                     {
                         singlePost.ImageUrl = FileData.FileName;
                     }
-                    _CommitChanges();
+                    await _context.SaveChangesAsync();
                     /* return enough attrs to redirect */
                     return new SinglePostViewModel { Slug = singlePost.Slug, PostID = singlePost.PostId };
                 }
             }
             return new SinglePostViewModel();
         }
-        public bool RemovePost(Guid postID)
+        public async Task<bool> RemovePost(Guid postID)
         {
-            Post post = _GetPost(postID);
+            Post post = await _GetPost(postID);
             if (post == null)
             {
                 return false;
             }
             post.Cancelled = true;
-            _CommitChanges();
+            await _context.SaveChangesAsync();
             return true;
         }
-        public bool DeletePost(Guid postID)
+        public async Task<bool> DeletePost(Guid postID)
         {
-            Post post = _GetPost(postID);
+            Post post = await _GetPost(postID);
             bool IsPostRemoved = false, IsFileRemoved = false;
             string FileDir = string.Empty;
             if (post == null)
@@ -247,16 +247,16 @@ namespace BlogWebApp.Services.Logic
         {
             return (string.IsNullOrEmpty(path)) ? "" : HttpContext.Current.Server.MapPath(path);
         }
-        private Post _GetPost(Guid postID)
+        private async Task<Post> _GetPost(Guid postID)
         {
-            return _context.Posts.FirstOrDefault(p => p.PostId == postID);
+            return await _context.Posts.FirstOrDefaultAsync(p => p.PostId == postID);
         }
-        private Post _EditPost(Post post)
+        private async Task<Post> _EditPost(Post post)
         {
             Post _dbPost = new Post();
             if (_ValidGuid(post.PostId))
             {
-                _dbPost = _GetPost(post.PostId);
+                _dbPost = await _GetPost(post.PostId);
                 if (_dbPost != null)
                 {
                     _dbPost.Body = post.Body;
@@ -264,7 +264,7 @@ namespace BlogWebApp.Services.Logic
                     _dbPost.Title = post.Title;
                     _dbPost.Tags = post.Tags;
                     _dbPost.ImageUrl = post.ImageUrl;
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
                     return _dbPost;
                 }
             }

@@ -12,12 +12,12 @@ namespace BlogWebApp.Services.Interface
     public interface IPost
     {
         Task<Post> AddPost(PostViewModel model);
-        SinglePostViewModel PutPost(PostViewModel post);
+        Task<SinglePostViewModel> PutPost(PostViewModel post);
         Task<SinglePostViewModel> GetPost(string slug);
         Task<SinglePostViewModel> GetPostById(Guid postID);
         IEnumerable<SinglePostViewModel> GetPosts(int? page);
         Task<IEnumerable<ManageBlogViewModel>> ManageBlog();
-        bool RemovePost(Guid postID);
-        bool DeletePost(Guid postID);
+        Task<bool> RemovePost(Guid postID);
+        Task<bool> DeletePost(Guid postID);
     }
 }
