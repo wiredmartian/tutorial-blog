@@ -319,7 +319,6 @@
     <Content Include="Content\materialize\fonts\roboto\Roboto-Bold.ttf" />
     <Content Include="Content\materialize\fonts\roboto\Roboto-Bold.eot" />
     <None Include="Scripts\jquery-2.2.4.intellisense.js" />
-    <Content Include="Scripts\highlight\highlight.pack.js" />
     <Content Include="Scripts\jquery-2.2.4.js" />
     <Content Include="Scripts\jquery-2.2.4.min.js" />
     <Content Include="Scripts\jquery-2.2.4.min.map" />

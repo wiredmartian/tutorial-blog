@@ -9,15 +9,15 @@ using System.Web;
 
 namespace BlogWebApp.Services.Interface
 {
-    interface IPost
+    public interface IPost
     {
-        Post AddPost(PostViewModel model);
-        SinglePostViewModel PutPost(PostViewModel post);
-        SinglePostViewModel GetPost(string slug);
-        SinglePostViewModel GetPostById(Guid postID);
+        Task<Post> AddPost(PostViewModel model);
+        Task<SinglePostViewModel> PutPost(PostViewModel post);
+        Task<SinglePostViewModel> GetPost(string slug);
+        Task<SinglePostViewModel> GetPostById(Guid postID);
         IEnumerable<SinglePostViewModel> GetPosts(int? page);
-        IEnumerable<ManageBlogViewModel> ManageBlog();
-        bool RemovePost(Guid postID);
-        bool DeletePost(Guid postID);
+        Task<IEnumerable<ManageBlogViewModel>> ManageBlog();
+        Task<bool> RemovePost(Guid postID);
+        Task<bool> DeletePost(Guid postID);
     }
 }

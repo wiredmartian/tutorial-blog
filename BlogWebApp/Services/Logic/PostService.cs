@@ -10,6 +10,8 @@ using System.Web;
 using PagedList;
 using PagedList.Mvc;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using System.Data.Entity;
 
 namespace BlogWebApp.Services.Logic
 {
@@ -18,7 +20,7 @@ namespace BlogWebApp.Services.Logic
         private readonly ApplicationDbContext _context = new ApplicationDbContext();
 
 
-        public Post AddPost(PostViewModel model)
+        public async Task<Post> AddPost(PostViewModel model)
         {
             FileHandler handler = new FileHandler(model.Image);
             var FileData = handler.UploadImage();
@@ -28,13 +30,13 @@ namespace BlogWebApp.Services.Logic
                 Title = model.Title,
                 Body = model.HtmlBody,
                 Tags = model.Tags,
-                Author = _GetAuthor(),
+                Author = await _GetAuthor(),
                 PostId = model.PostID
             };
             post.Slug = GenerateSlugFromTitle(post.Title.Trim());
             post.Blurb = model.Blurb;
             
-            Blog blog = GetBlog();
+            Blog blog = await GetBlog();
 
             post.BlogId = blog.BlogId;
             post.Date = DateTime.Now;
@@ -50,14 +52,14 @@ namespace BlogWebApp.Services.Logic
                 post.ImageUrl = "/Content/Images/Blog/placeholder.png";
             }
             _context.Posts.Add(post);
-            _CommitChanges();
+            await _context.SaveChangesAsync();
             return post;
         }
-        public Blog GetBlog()
+        public async Task<Blog> GetBlog()
         {
-            ApplicationUser user = GetUser();
+            ApplicationUser user = await GetUser();
 
-            Blog blog = _context.Blogs.FirstOrDefault(b => b.UserId.Equals(user.Id));
+            Blog blog = await _context.Blogs.FirstOrDefaultAsync(b => b.UserId.Equals(user.Id));
             if (blog != null)
             {
                 return blog;
@@ -69,31 +71,39 @@ namespace BlogWebApp.Services.Logic
                     UserId = user.Id
                 };
                 _context.Blogs.Add(newblog);
-                _CommitChanges();
+                await _context.SaveChangesAsync();
                 return newblog;
             }
         }
 
-        public SinglePostViewModel GetPost(string slug)
+        public async Task<SinglePostViewModel> GetPost(string slug)
         {
-            SinglePostViewModel post = _context.Posts.Where(x => x.Slug.Equals(slug) && x.Cancelled == false)
-                .Select(x => new SinglePostViewModel
+            Post _post = new Post();
+            SinglePostViewModel post = new SinglePostViewModel();
+            _post = await _context.Posts.Where(x => x.Slug.Equals(slug) && x.Cancelled == false).FirstOrDefaultAsync();
+
+            if (_post != null)
+            {
+                _post = await _context.Posts.FirstOrDefaultAsync(p => p.PostId.Equals(_post.PostId));
+                if (_post != null)
                 {
-                    PostID = x.PostId,
-                    Title = x.Title,
-                    Slug = x.Slug,
-                    Body = x.Body,
-                    Blurb = x.Blurb,
-                    ImageUrl = x.ImageUrl,
-                    Author = x.Author,
-                    Date = x.Date,
-                    Tags = x.Tags
-                }).FirstOrDefault();
+                    post.PostID = _post.PostId;
+                    post.Title = _post.Title;
+                    post.Slug = _post.Slug;
+                    post.Body = _post.Body;
+                    post.Blurb = _post.Blurb;
+                    post.ImageUrl = _post.ImageUrl;
+                    post.Author = _post.Author;
+                    post.Date = _post.Date;
+                    post.Tags = _post.Tags;
+                }
+            }
+            
             return post;
         }
-        public SinglePostViewModel GetPostById(Guid postID)
+        public async Task<SinglePostViewModel> GetPostById(Guid postID)
         {
-            SinglePostViewModel post = _context.Posts.Where(x => x.PostId.Equals(postID) && x.Cancelled == false)
+            SinglePostViewModel post = await _context.Posts.Where(x => x.PostId.Equals(postID) && x.Cancelled == false)
                 .Select(x => new SinglePostViewModel
                 {
                     PostID = x.PostId,
@@ -105,7 +115,7 @@ namespace BlogWebApp.Services.Logic
                     Author = x.Author,
                     Date = x.Date,
                     Tags = x.Tags
-                }).FirstOrDefault();
+                }).FirstOrDefaultAsync();
             return post;
         }
 
@@ -123,13 +133,13 @@ namespace BlogWebApp.Services.Logic
             }).ToList().ToPagedList(page ?? 1, 6); // if null set 1, pageSize 6
             return posts;
         }
-        public IEnumerable<ManageBlogViewModel> ManageBlog()
+        public async Task<IEnumerable<ManageBlogViewModel>> ManageBlog()
         {
-            var user = GetUser();
-            var blog = _context.Blogs.FirstOrDefault(b => b.UserId == user.Id);
+            var user = await GetUser();
+            var blog = await _context.Blogs.FirstOrDefaultAsync(b => b.UserId == user.Id);
             if (blog != null)
             {
-                var posts = _context.Posts.Where(p => p.BlogId == blog.BlogId && p.Cancelled == false)
+                var posts =  _context.Posts.Where(p => p.BlogId == blog.BlogId && p.Cancelled == false)
                     .Select(x => new ManageBlogViewModel
                     {
                         PostID = x.PostId,
@@ -141,19 +151,19 @@ namespace BlogWebApp.Services.Logic
             }
             return null;
         }
-        public ApplicationUser GetUser()
+        public async Task<ApplicationUser> GetUser()
         {
-            ApplicationUser webAppUser = _context.Users.FirstOrDefault(u => u.UserName.Equals(HttpContext.Current.User.Identity.Name));
+            ApplicationUser webAppUser = await _context.Users.FirstOrDefaultAsync(u => u.UserName.Equals(HttpContext.Current.User.Identity.Name));
             return webAppUser;
         }
 
-        public SinglePostViewModel PutPost(PostViewModel post)
+        public async Task<SinglePostViewModel> PutPost(PostViewModel post)
         {
             if (_ValidGuid(post.PostID))
             {
                 FileHandler handler = new FileHandler(post.Image);
                 var FileData = handler.UploadImage();
-                var singlePost = _GetPost(post.PostID);
+                var singlePost = await _GetPost(post.PostID);
 
                 if (singlePost != null)
                 {
@@ -168,27 +178,27 @@ namespace BlogWebApp.Services.Logic
                     {
                         singlePost.ImageUrl = FileData.FileName;
                     }
-                    _CommitChanges();
+                    await _context.SaveChangesAsync();
                     /* return enough attrs to redirect */
                     return new SinglePostViewModel { Slug = singlePost.Slug, PostID = singlePost.PostId };
                 }
             }
             return new SinglePostViewModel();
         }
-        public bool RemovePost(Guid postID)
+        public async Task<bool> RemovePost(Guid postID)
         {
-            Post post = _GetPost(postID);
+            Post post = await _GetPost(postID);
             if (post == null)
             {
                 return false;
             }
             post.Cancelled = true;
-            _CommitChanges();
+            await _context.SaveChangesAsync();
             return true;
         }
-        public bool DeletePost(Guid postID)
+        public async Task<bool> DeletePost(Guid postID)
         {
-            Post post = _GetPost(postID);
+            Post post = await _GetPost(postID);
             bool IsPostRemoved = false, IsFileRemoved = false;
             string FileDir = string.Empty;
             if (post == null)
@@ -237,16 +247,16 @@ namespace BlogWebApp.Services.Logic
         {
             return (string.IsNullOrEmpty(path)) ? "" : HttpContext.Current.Server.MapPath(path);
         }
-        private Post _GetPost(Guid postID)
+        private async Task<Post> _GetPost(Guid postID)
         {
-            return _context.Posts.FirstOrDefault(p => p.PostId == postID);
+            return await _context.Posts.FirstOrDefaultAsync(p => p.PostId == postID);
         }
-        private Post _EditPost(Post post)
+        private async Task<Post> _EditPost(Post post)
         {
             Post _dbPost = new Post();
             if (_ValidGuid(post.PostId))
             {
-                _dbPost = _GetPost(post.PostId);
+                _dbPost = await _GetPost(post.PostId);
                 if (_dbPost != null)
                 {
                     _dbPost.Body = post.Body;
@@ -254,7 +264,7 @@ namespace BlogWebApp.Services.Logic
                     _dbPost.Title = post.Title;
                     _dbPost.Tags = post.Tags;
                     _dbPost.ImageUrl = post.ImageUrl;
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
                     return _dbPost;
                 }
             }
@@ -283,10 +293,10 @@ namespace BlogWebApp.Services.Logic
             title = r.Replace(title, "-");
             return title.Replace(' ', '-').ToLower();
         }
-        private string _GetAuthor()
+        private async Task<string> _GetAuthor()
         {
-            var email = GetUser().Email;
-            return email.Substring(0, email.IndexOf('@')).ToUpper();
+            var user = await GetUser();
+            return user.Email.Substring(0, user.Email.IndexOf('@')).ToUpper();
         }
     }
 }
