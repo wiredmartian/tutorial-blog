@@ -10,6 +10,8 @@ using System.Web;
 using PagedList;
 using PagedList.Mvc;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using System.Data.Entity;
 
 namespace BlogWebApp.Services.Logic
 {
@@ -74,21 +76,29 @@ namespace BlogWebApp.Services.Logic
             }
         }
 
-        public SinglePostViewModel GetPost(string slug)
+        public async Task<SinglePostViewModel> GetPost(string slug)
         {
-            SinglePostViewModel post = _context.Posts.Where(x => x.Slug.Equals(slug) && x.Cancelled == false)
-                .Select(x => new SinglePostViewModel
+            Post _post = new Post();
+            SinglePostViewModel post = new SinglePostViewModel();
+            _post = await _context.Posts.Where(x => x.Slug.Equals(slug) && x.Cancelled == false).FirstOrDefaultAsync();
+
+            if (_post != null)
+            {
+                _post = await _context.Posts.FirstOrDefaultAsync(p => p.PostId.Equals(_post.PostId));
+                if (_post != null)
                 {
-                    PostID = x.PostId,
-                    Title = x.Title,
-                    Slug = x.Slug,
-                    Body = x.Body,
-                    Blurb = x.Blurb,
-                    ImageUrl = x.ImageUrl,
-                    Author = x.Author,
-                    Date = x.Date,
-                    Tags = x.Tags
-                }).FirstOrDefault();
+                    post.PostID = _post.PostId;
+                    post.Title = _post.Title;
+                    post.Slug = _post.Slug;
+                    post.Body = _post.Body;
+                    post.Blurb = _post.Blurb;
+                    post.ImageUrl = _post.ImageUrl;
+                    post.Author = _post.Author;
+                    post.Date = _post.Date;
+                    post.Tags = _post.Tags;
+                }
+            }
+            
             return post;
         }
         public SinglePostViewModel GetPostById(Guid postID)

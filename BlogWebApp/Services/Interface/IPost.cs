@@ -9,11 +9,11 @@ using System.Web;
 
 namespace BlogWebApp.Services.Interface
 {
-    interface IPost
+    public interface IPost
     {
         Post AddPost(PostViewModel model);
         SinglePostViewModel PutPost(PostViewModel post);
-        SinglePostViewModel GetPost(string slug);
+        Task<SinglePostViewModel> GetPost(string slug);
         SinglePostViewModel GetPostById(Guid postID);
         IEnumerable<SinglePostViewModel> GetPosts(int? page);
         IEnumerable<ManageBlogViewModel> ManageBlog();

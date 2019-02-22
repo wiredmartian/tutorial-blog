@@ -4,6 +4,7 @@ using BlogWebApp.Services.Logic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -13,7 +14,13 @@ namespace BlogWebApp.Controllers
     [RoutePrefix("blog")]
     public class BlogController : Controller
     {
-        private readonly IPost _post = new Services.Logic.PostService();
+        public BlogController(): this(new PostService()) { }
+        private readonly IPost _post;
+
+        public BlogController(IPost _post)
+        {
+            this._post = _post;
+        }
         // GET: Blog
         [HttpGet]
         [Route("add")]
@@ -67,12 +74,15 @@ namespace BlogWebApp.Controllers
             return View(model);
         }
         [HttpGet]
+        [AllowAnonymous]
         [Route("posts")]
         public ViewResult GetListOfPosts(int? page)
         {
-            return View(_post.GetPosts(page));
+            var posts = _post.GetPosts(page);
+            return View(posts);
         }
         [HttpGet]
+        [AllowAnonymous]
         [Route("preview/{slug}")]
         public JsonResult PreviewPost(string slug)
         {
@@ -84,10 +94,11 @@ namespace BlogWebApp.Controllers
             return Json(new { });
         }
         [HttpGet]
+        [AllowAnonymous]
         [Route("post/{slug}")]
-        public ViewResult GetPostBySlug(string slug)
+        public async Task<ViewResult> GetPostBySlug(string slug)
         {
-            var post = _post.GetPost(slug);
+            var post = await _post.GetPost(slug);
             return View(post);
         }
 
