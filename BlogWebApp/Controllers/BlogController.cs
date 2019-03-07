@@ -104,9 +104,9 @@ namespace BlogWebApp.Controllers
 
         [HttpGet]
         [Route("manage")]
-        public ViewResult ManageBlog()
+        public async Task<ViewResult> ManageBlog()
         {
-            var posts = _post.ManageBlog();
+            var posts = await _post.ManageBlog();
             return View(posts);
         }
 
