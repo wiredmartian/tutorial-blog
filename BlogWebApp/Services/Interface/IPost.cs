@@ -16,6 +16,7 @@ namespace BlogWebApp.Services.Interface
         Task<SinglePostViewModel> GetPost(string slug);
         Task<SinglePostViewModel> GetPostById(Guid postID);
         IEnumerable<SinglePostViewModel> GetPosts(int? page);
+        IEnumerable<SinglePostViewModel> GetPosts();
         Task<IEnumerable<ManageBlogViewModel>> ManageBlog();
         Task<bool> RemovePost(Guid postID);
         Task<bool> DeletePost(Guid postID);
