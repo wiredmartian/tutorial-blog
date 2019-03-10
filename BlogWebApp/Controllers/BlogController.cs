@@ -104,9 +104,9 @@ namespace BlogWebApp.Controllers
 
         [HttpGet]
         [Route("manage")]
-        public ViewResult ManageBlog()
+        public async Task<ViewResult> ManageBlog()
         {
-            var posts = _post.ManageBlog();
+            var posts = await _post.ManageBlog();
             return View(posts);
         }
 
@@ -116,7 +116,7 @@ namespace BlogWebApp.Controllers
         {
             string message = string.Empty;
             bool success = false;
-            if (id == Guid.Empty || id == null)
+            if (id == Guid.Empty)
             {
                 message = "Post Not Found";
             }
@@ -130,6 +130,26 @@ namespace BlogWebApp.Controllers
                 success = true;
             }
             return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
+        }
+
+        /** Calls from the Angular App */
+        [HttpGet]
+        [AllowAnonymous]
+        public JsonResult GetBlogPosts()
+        {
+            var posts = _post.GetPosts();
+            return Json(posts, JsonRequestBehavior.AllowGet);
+        }
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<JsonResult> GetBlogPost(string slug)
+        {
+            if (!string.IsNullOrEmpty(slug))
+            {
+                var post = await _post.GetPost(slug);
+                return Json(post, JsonRequestBehavior.AllowGet);
+            }
+            return Json(new object { }, JsonRequestBehavior.AllowGet);
         }
     }
 }

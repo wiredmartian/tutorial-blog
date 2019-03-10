@@ -133,6 +133,20 @@ namespace BlogWebApp.Services.Logic
             }).ToList().ToPagedList(page ?? 1, 6); // if null set 1, pageSize 6
             return posts;
         }
+        public IEnumerable<SinglePostViewModel> GetPosts()
+        {
+            IEnumerable<SinglePostViewModel> posts = _context.Posts.Where(x => x.Cancelled == false)
+                .Select(x => new SinglePostViewModel
+                {
+                    PostID = x.PostId,
+                    Title = x.Title,
+                    Slug = x.Slug,
+                    Blurb = x.Blurb,
+                    ImageUrl = x.ImageUrl,
+                    Author = x.Author
+                }).ToList();
+            return posts;
+        }
         public async Task<IEnumerable<ManageBlogViewModel>> ManageBlog()
         {
             var user = await GetUser();
