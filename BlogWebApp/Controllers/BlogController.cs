@@ -135,6 +135,7 @@ namespace BlogWebApp.Controllers
         /** Calls from the Angular App */
         [HttpGet]
         [AllowAnonymous]
+        [Route("ng-posts")]
         public JsonResult GetBlogPosts()
         {
             var posts = _post.GetPosts();
@@ -142,6 +143,7 @@ namespace BlogWebApp.Controllers
         }
         [HttpGet]
         [AllowAnonymous]
+        [Route("ng-post/{slug}")]
         public async Task<JsonResult> GetBlogPost(string slug)
         {
             if (!string.IsNullOrEmpty(slug))
